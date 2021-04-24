@@ -37,12 +37,12 @@ public class MainFrame extends JFrame {
     private final JTextField textFieldTo;
     private final JTextArea textAreaIncoming;
     private final JTextArea textAreaOutgoing;
+
     public MainFrame() {
         super(FRAME_TITLE);
         setMinimumSize(
                 new Dimension(FRAME_MINIMUM_WIDTH, FRAME_MINIMUM_HEIGHT));
-        Курс «Прикладное программирование». Лабораторная работа №7
-© Глебов А.В. 27
+
 // Центрирование окна
         final Toolkit kit = Toolkit.getDefaultToolkit();
         setLocation((kit.getScreenSize().width - getWidth()) / 2,
@@ -81,21 +81,20 @@ public class MainFrame extends JFrame {
         messagePanel.setLayout(layout2);
         layout2.setHorizontalGroup(layout2.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout2.createParallelGroup(Alignment.TRAILING)
-                        .addGroup(layout2.createSequentialGroup()
-                                .addComponent(labelFrom)
-                                .addGap(SMALL_GAP)
-                                .addComponent(textFieldFrom)
-                                .addGap(LARGE_GAP)
-                                .addComponent(labelTo)
-                                .addGap(SMALL_GAP)
-                                .addComponent(textFieldTo))
+                .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.TRAILING).addGroup(layout2.createSequentialGroup()
+                        .addComponent(labelFrom)
+                        .addGap(SMALL_GAP)
+                        .addComponent(textFieldFrom)
+                        .addGap(LARGE_GAP)
+                        .addComponent(labelTo)
+                        .addGap(SMALL_GAP)
+                        .addComponent(textFieldTo))
                         .addComponent(scrollPaneOutgoing)
                         .addComponent(sendButton))
                 .addContainerGap());
         layout2.setVerticalGroup(layout2.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout2.createParallelGroup(Alignment.BASELINE)
+                .addGroup(layout2.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(labelFrom)
                         .addComponent(textFieldFrom)
                         .addComponent(labelTo)
@@ -148,8 +147,7 @@ public class MainFrame extends JFrame {
                                 " (" + address + "): " +
                                 message + "\n");
                     }
-                    Курс «Прикладное программирование». Лабораторная работа №7
-© Глебов А.В. 29
+
                 } catch (IOException e) {
                     e.printStackTrace();
                     JOptionPane.showMessageDialog(MainFrame.this,
@@ -159,6 +157,7 @@ public class MainFrame extends JFrame {
             }
         }).start();
     }
+
     private void sendMessage() {
         try {
 // Получаем необходимые параметры
@@ -205,9 +204,8 @@ public class MainFrame extends JFrame {
             e.printStackTrace();
             JOptionPane.showMessageDialog(MainFrame.this,
                     "Не удалось отправить сообщение: узел-адресат не найден",
-                    Курс «Прикладное программирование». Лабораторная работа №7
-© Глебов А.В. 30
-            "Ошибка", JOptionPane.ERROR_MESSAGE);
+
+                    "Ошибка", JOptionPane.ERROR_MESSAGE);
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(MainFrame.this,
@@ -215,6 +213,7 @@ public class MainFrame extends JFrame {
                     JOptionPane.ERROR_MESSAGE);
         }
     }
+
     public static void main(String[] args) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -225,3 +224,4 @@ public class MainFrame extends JFrame {
             }
         });
     }
+}
