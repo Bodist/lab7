@@ -95,3 +95,133 @@ public class MainFrame extends JFrame {
                 .addContainerGap());
         layout2.setVerticalGroup(layout2.createSequentialGroup()
                 .addContainerGap()
+                .addGroup(layout2.createParallelGroup(Alignment.BASELINE)
+                        .addComponent(labelFrom)
+                        .addComponent(textFieldFrom)
+                        .addComponent(labelTo)
+                        .addComponent(textFieldTo))
+                .addGap(MEDIUM_GAP)
+                .addComponent(scrollPaneOutgoing)
+                .addGap(MEDIUM_GAP)
+                .addComponent(sendButton)
+                .addContainerGap());
+// Компоновка элементов фрейма
+        final GroupLayout layout1 = new GroupLayout(getContentPane());
+        setLayout(layout1);
+        layout1.setHorizontalGroup(layout1.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout1.createParallelGroup()
+                        .addComponent(scrollPaneIncoming)
+                        .addComponent(messagePanel))
+                .addContainerGap());
+        layout1.setVerticalGroup(layout1.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(scrollPaneIncoming)
+                .addGap(MEDIUM_GAP)
+                .addComponent(messagePanel)
+                .addContainerGap());
+// Создание и запуск потока-обработчика запросов
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    final ServerSocket serverSocket =
+                            new ServerSocket(SERVER_PORT);
+                    while (!Thread.interrupted()) {
+                        final Socket socket = serverSocket.accept();
+                        final DataInputStream in = new DataInputStream(
+                                socket.getInputStream());
+// Читаем имя отправителя
+                        final String senderName = in.readUTF();
+// Читаем сообщение
+                        final String message = in.readUTF();
+// Закрываем соединение
+                        socket.close();
+// Выделяем IP-адрес
+                        final String address =
+                                ((InetSocketAddress) socket
+                                        .getRemoteSocketAddress())
+                                        .getAddress()
+                                        .getHostAddress();
+// Выводим сообщение в текстовую область
+                        textAreaIncoming.append(senderName +
+                                " (" + address + "): " +
+                                message + "\n");
+                    }
+                    Курс «Прикладное программирование». Лабораторная работа №7
+© Глебов А.В. 29
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(MainFrame.this,
+                            "Ошибка в работе сервера", "Ошибка",
+                            JOptionPane.ERROR_MESSAGE);
+                }
+            }
+        }).start();
+    }
+    private void sendMessage() {
+        try {
+// Получаем необходимые параметры
+            final String senderName = textFieldFrom.getText();
+            final String destinationAddress = textFieldTo.getText();
+            final String message = textAreaOutgoing.getText();
+// Убеждаемся, что поля не пустые
+            if (senderName.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Введите имя отправителя", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (destinationAddress.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Введите адрес узла-получателя", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+            if (message.isEmpty()) {
+                JOptionPane.showMessageDialog(this,
+                        "Введите текст сообщения", "Ошибка",
+                        JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+// Создаем сокет для соединения
+            final Socket socket =
+                    new Socket(destinationAddress, SERVER_PORT);
+// Открываем поток вывода данных
+            final DataOutputStream out =
+                    new DataOutputStream(socket.getOutputStream());
+// Записываем в поток имя
+            out.writeUTF(senderName);
+// Записываем в поток сообщение
+            out.writeUTF(message);
+// Закрываем сокет
+            socket.close();
+// Помещаем сообщения в текстовую область вывода
+            textAreaIncoming.append("Я -> " + destinationAddress + ": "
+                    + message + "\n");
+// Очищаем текстовую область ввода сообщения
+            textAreaOutgoing.setText("");
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainFrame.this,
+                    "Не удалось отправить сообщение: узел-адресат не найден",
+                    Курс «Прикладное программирование». Лабораторная работа №7
+© Глебов А.В. 30
+            "Ошибка", JOptionPane.ERROR_MESSAGE);
+        } catch (IOException e) {
+            e.printStackTrace();
+            JOptionPane.showMessageDialog(MainFrame.this,
+                    "Не удалось отправить сообщение", "Ошибка",
+                    JOptionPane.ERROR_MESSAGE);
+        }
+    }
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                final MainFrame frame = new MainFrame();
+                frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+                frame.setVisible(true);
+            }
+        });
+    }
