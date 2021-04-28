@@ -51,8 +51,7 @@ public class MainFrame extends JFrame {
         textAreaIncoming = new JTextArea(INCOMING_AREA_DEFAULT_ROWS, 0);
         textAreaIncoming.setEditable(false);
 // Контейнер, обеспечивающий прокрутку текстовой области
-        final JScrollPane scrollPaneIncoming =
-                new JScrollPane(textAreaIncoming);
+        final JScrollPane scrollPaneIncoming = new JScrollPane(textAreaIncoming);
 // Подписи полей
         final JLabel labelFrom = new JLabel("Подпись");
         final JLabel labelTo = new JLabel("Получатель");
@@ -203,9 +202,9 @@ public class MainFrame extends JFrame {
         } catch (UnknownHostException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(MainFrame.this,
-                    "Не удалось отправить сообщение: узел-адресат не найден",
-
-                    "Ошибка", JOptionPane.ERROR_MESSAGE);
+                    "Неверный IP, введи 127.ххх.ххх.ххх", "Ошибка", JOptionPane.ERROR_MESSAGE);
+            textFieldTo.setText("");
+            textFieldTo.requestFocusInWindow();
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(MainFrame.this,
